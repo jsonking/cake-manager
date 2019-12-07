@@ -1,9 +1,22 @@
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE")
+    }
 }
 
-group 'com.waracle'
-version '1.0-SNAPSHOT'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+bootJar {
+    archiveBaseName = 'cake-manager'
+    archiveVersion =  '0.1.0'
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -13,5 +26,5 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation "junit:junit"
 }
