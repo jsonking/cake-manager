@@ -1,4 +1,4 @@
-package com.waracle.cakemgr.model;
+package com.waracle.cakemgr.cake;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
