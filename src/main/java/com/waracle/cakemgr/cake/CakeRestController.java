@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-public class CakeController {
+public class CakeRestController {
 
     private CakeRepository cakeRepository;
 
