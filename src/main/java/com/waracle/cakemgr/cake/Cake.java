@@ -9,6 +9,7 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode
 @Entity
+@Getter
 public class Cake {
 
     protected Cake() {}
@@ -23,15 +24,12 @@ public class Cake {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
     @Column(unique = true, nullable = false, length = 100)
     private String name;
 
-    @Getter
     @Column(nullable = false, length = 100)
     private String description;
 
-    @Getter
     @Column(nullable = false, length = 300)
     private String imageURL;
 
