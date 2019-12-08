@@ -8,7 +8,9 @@ https://travis-ci.org/jsonking/cake-manager
 - Converted to spring-boot
 - Added tests
 - Added thymeleaf (very basic UI)
-- Detailed changes can be see via the commit history. Command: `git log`
+- Detailed changes can be see via the commit history. 
+   - https://github.com/jsonking/cake-manager/commits/master
+   - or locally run command: `git log`
 
 # Build
 Requires Java 8
