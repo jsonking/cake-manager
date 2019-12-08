@@ -3,8 +3,8 @@ Waracle Cake Manager Micro Service
 
 # Changes
 - Converted to spring-boot
-- added tests
-- added thymeleaf (very basic UI)
+- Added tests
+- Added thymeleaf (very basic UI)
 - Detailed changes can be see via the commit history. Command: `git log`
 
 # Build
@@ -31,7 +31,7 @@ A single cake has been baked into the system for you to enjoy!
 `curl -i -X POST -H "Content-Type:application/json" -d '{"name":"Cheesecake","description":"Cheesecake is a sweet dessert consisting of one or more layers","imageURL":"https://www.seriouseats.com/recipes/images/2017/06/20170526-no-bake-cheesecake-vicky-wasik-18-1500x1125.jpg"}' http://localhost:8282/cakes
 `
 
-# TODO
+# todo's
 - Separate the UI (e.g. using ReactJs)
 - Improved UI error handling and validation
 - Authentication via OAuth2
