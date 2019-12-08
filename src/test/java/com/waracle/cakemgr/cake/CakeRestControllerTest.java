@@ -6,29 +6,32 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-import java.net.URI;
 import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class CakeRestControllerTest {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
     private CakeRepository repository;
@@ -47,30 +50,19 @@ public class CakeRestControllerTest {
 
     @Test
     public void testGETCake() throws Exception {
-
-        final int id = savedCake.getId();
-
-        ResponseEntity<String> entity = restTemplate.getForEntity(
-                format("http://localhost:%d/cake/%d",port, id), String.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-
         String json = new ObjectMapper().writeValueAsString(savedCake);
 
-        String body = entity.getBody();
-        assertEquals(json, body);
+        mockMvc.perform(get(format("/cake/%d", savedCake.getId())))
+                .andExpect(status().isOk())
+                .andExpect(result -> equals(json));
     }
 
     @Test
     public void testGETCakes() throws Exception {
-
-        ResponseEntity<String> entity = restTemplate.getForEntity(
-                format("http://localhost:%d/cakes",port), String.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-
         String json = new ObjectMapper().writeValueAsString(singletonList(savedCake));
-
-        String body = entity.getBody();
-        assertEquals(json, body);
+        mockMvc.perform(get("/cakes/"))
+                .andExpect(status().isOk())
+                .andExpect(result -> equals(json));
     }
 
     @Test
@@ -81,21 +73,19 @@ public class CakeRestControllerTest {
         Cake cake = new Cake(name,"a test cake to be saved", "http://image_url");
         String json = new ObjectMapper().writeValueAsString(cake);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(post("/cakes").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", containsString("/cake/")))
+                .andReturn();
 
-        HttpEntity<String> request = new HttpEntity<>(json, headers);
-
-        URI locationHeader = restTemplate.postForLocation(format("http://localhost:%d/cakes", port), request);
-        String location = locationHeader.toString();
-        assertFalse("The location header was missing",location.isEmpty());
+        String location = mvcResult.getResponse().getHeader("Location");
 
         // Location header is of the form /cake/id
-        String [] parts = location.split("/cake/");
+        String[] parts = location.split("/cake/");
         int id = Integer.parseInt(parts[1]);
 
         Optional<Cake> newCake = repository.findById(id);
         assertTrue("the cake was not persisted", newCake.isPresent());
-        assertEquals(name,newCake.get().getName());
+        assertEquals(name, newCake.get().getName());
     }
 }

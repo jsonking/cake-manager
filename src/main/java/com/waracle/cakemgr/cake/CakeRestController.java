@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import static java.lang.String.format;
 
 @RestController
 @AllArgsConstructor
@@ -23,7 +24,7 @@ public class CakeRestController {
     ResponseEntity<?> newCake(@RequestBody Cake cake) {
         Cake saved = cakeRepository.save(cake);
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.LOCATION,"/cake/" + saved.getId());
+        headers.set(HttpHeaders.LOCATION, format("/cake/%d",saved.getId()));
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
