@@ -2,6 +2,7 @@ Waracle Cake Manager Micro Service
 ==================================
 
 ![Build Status](https://travis-ci.org/jsonking/cake-manager.svg?branch=master)
+https://travis-ci.org/jsonking/cake-manager
 
 # Changes
 - Converted to spring-boot
