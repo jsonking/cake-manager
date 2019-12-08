@@ -1,5 +1,6 @@
 package com.waracle.cakemgr.cake;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
+@AllArgsConstructor
 public class CakeWebController {
 
     private CakeRepository repository;
-
-    CakeWebController(CakeRepository repository) {
-        this.repository = repository;
-    }
 
     @GetMapping("/")
     public String homePage(Model model) {
