@@ -4,31 +4,27 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static java.lang.String.format;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class CakeWebControllerTest {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
     private CakeRepository repository;
@@ -39,31 +35,29 @@ public class CakeWebControllerTest {
     }
 
     @Test
-    public void testIndexPageReturnsOK() {
-        ResponseEntity<String> entity = restTemplate.getForEntity(
-                format("http://localhost:%d/",port), String.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertTrue("cakes text was missing from homepage",entity.getBody().contains("Cakes"));
+    public void testIndexPageReturnsOK() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Cakes")));
     }
 
     @Test
-    public void testAddCakeRequestReturnsAddPage() {
-        ResponseEntity<String> entity = restTemplate.getForEntity(
-                format("http://localhost:%d/addCake",port), String.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertTrue("add cakes text was missing from homepage",entity.getBody().contains("Add Cake"));
+    public void testAddCakeRequestReturnsAddPage() throws Exception {
+        mockMvc.perform(get("/addCake"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Add Cake")));
     }
 
     @Test
-    public void testSaveCakeIsSuccessful_AndShownOnPage() {
+    public void testSaveCakeIsSuccessful_AndShownOnPage() throws Exception {
 
-        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> parts = new LinkedMultiValueMap<>();
         parts.add("name", "test cake1");
         parts.add("description", "a test cake to be saved");
         parts.add("imageURL", "http://image_url");
 
-        ResponseEntity<String> entity = restTemplate.postForEntity(format("http://localhost:%d/saveCake", port), parts, String.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertTrue("test cake was not added",entity.getBody().contains("test cake1"));
+        mockMvc.perform(post("/saveCake").params(parts))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("test cake1")));
     }
 }
