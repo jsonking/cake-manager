@@ -1,5 +1,6 @@
 package com.waracle.cakemgr.cake;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -29,6 +29,14 @@ public class CakeWebControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private CakeRepository repository;
+
+    @After
+    public void removeAllCakes() {
+        repository.deleteAll();
+    }
 
     @Test
     public void testIndexPageReturnsOK() {

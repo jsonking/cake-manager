@@ -1,6 +1,8 @@
 package com.waracle.cakemgr.cake;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,7 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
@@ -30,19 +31,30 @@ public class CakeRestControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private CakeRepository respository;
+    private CakeRepository repository;
+
+    private Cake savedCake;
+
+    @Before
+    public void createCake() {
+        savedCake = repository.save(new Cake("rest cake", "cake created by the rest controller test", "http://image_url" ));
+    }
+
+    @After
+    public void removeAllCakes() {
+        repository.deleteAll();
+    }
 
     @Test
     public void testGETCake() throws Exception {
 
-        final int id = 1;
+        final int id = savedCake.getId();
 
         ResponseEntity<String> entity = restTemplate.getForEntity(
                 format("http://localhost:%d/cake/%d",port, id), String.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());
 
-        Cake cake = respository.findById(id).get();
-        String json = new ObjectMapper().writeValueAsString(cake);
+        String json = new ObjectMapper().writeValueAsString(savedCake);
 
         String body = entity.getBody();
         assertEquals(json, body);
@@ -55,8 +67,7 @@ public class CakeRestControllerTest {
                 format("http://localhost:%d/cakes",port), String.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());
 
-        Cake cake = respository.findById(1).get();
-        String json = new ObjectMapper().writeValueAsString(singletonList(cake));
+        String json = new ObjectMapper().writeValueAsString(singletonList(savedCake));
 
         String body = entity.getBody();
         assertEquals(json, body);
@@ -65,21 +76,26 @@ public class CakeRestControllerTest {
     @Test
     public void testPOSTCreatesCake() throws Exception {
 
-        int expectedId = 2;
+        String name = "new test cake via rest";
 
-        Cake cake = new Cake("test cake via rest","a test cake to be saved", "http://image_url");
+        Cake cake = new Cake(name,"a test cake to be saved", "http://image_url");
         String json = new ObjectMapper().writeValueAsString(cake);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> request =
-                new HttpEntity<String>(json, headers);
+        HttpEntity<String> request = new HttpEntity<>(json, headers);
 
         URI locationHeader = restTemplate.postForLocation(format("http://localhost:%d/cakes", port), request);
-        assertEquals(format("/cake/%d", expectedId), locationHeader.toString());
+        String location = locationHeader.toString();
+        assertFalse("The location header was missing",location.isEmpty());
 
-        Optional<Cake> newCake = respository.findById(expectedId);
+        // Location header is of the form /cake/id
+        String [] parts = location.split("/cake/");
+        int id = Integer.parseInt(parts[1]);
+
+        Optional<Cake> newCake = repository.findById(id);
         assertTrue("the cake was not persisted", newCake.isPresent());
+        assertEquals(name,newCake.get().getName());
     }
 }
