@@ -19,9 +19,9 @@ public class CakeApplication {
     public CommandLineRunner defaultCakes(CakeRepository repository) {
         log.info("Populating default cakes");
         return args -> repository.save(new Cake(
-                "Battenberg",
-                "A simple sponge cake: usually yellow and pink coloured. Decorated with marzipan and jam.",
-                "https://pixfeeds.com/images/36/611695/1280-827655004-battenberg-cake.jpg"));
+                "Chocolate Cake",
+                "A sponge cake containing lots of chocolate",
+                "https://keyassets-p2.timeincuk.net/wp/prod/wp-content/uploads/sites/53/2017/11/Chocolate-sponge-cake.jpg"));
     }
 }
 
