@@ -9,9 +9,10 @@
 <h1>Cakes</h1>
 <table border="1">
     <thead>
-    <tr><th>Name</th><th>Description</th></tr>
+    <tr><th></th><th>Name</th><th>Description</th></tr>
     </thead>
 <tr th:each="cake: ${cakes}">
+    <td><img th:src="${cake.imageURL}" width="50px" height="50px"/></td>
     <td th:text="${cake.name}" ></td>
     <td th:text="${cake.description}" ></td>
 </tr>
