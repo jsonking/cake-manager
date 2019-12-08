@@ -10,7 +10,7 @@ Waracle Cake Manager Micro Service
 # Build
 Requires Java 8
 
-`./gradlew build`
+`./gradlew clean build`
 
 # Run
 `./gradlew bootRun`
