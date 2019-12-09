@@ -9,6 +9,7 @@ buildscript {
 
 plugins {
     id "io.freefair.lombok" version "4.1.6"
+    id "com.google.cloud.tools.jib" version "1.8.0"
 }
 
 apply plugin: 'java'

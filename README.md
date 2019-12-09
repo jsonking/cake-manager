@@ -36,8 +36,17 @@ A single cake has been baked into the system for you to enjoy!
 `curl -i -X POST -H "Content-Type:application/json" -d '{"name":"Cheesecake","description":"Cheesecake is a sweet dessert consisting of one or more layers","imageURL":"https://www.seriouseats.com/recipes/images/2017/06/20170526-no-bake-cheesecake-vicky-wasik-18-1500x1125.jpg"}' http://localhost:8282/cakes
 `
 
+# Containerisation
+
+## Docker
+Example commands to build and run a [docker](https://www.docker.com/) image locally
+```
+./gradlew jibDockerBuild --image=waracle/cake-manager
+docker run -p 8989:8282 -t waracle/cake-manager
+```
+The application will then be accessible at http://localhost:8989/
+
 # todo's
 - Separate the UI (e.g. using ReactJs)
 - Improved UI error handling and validation
 - Authentication via OAuth2
-- Containerisation
