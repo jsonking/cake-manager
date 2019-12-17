@@ -43,7 +43,7 @@ This is developed using the [React Framework](https://reactjs.org/).
 
 Start the user interface for development (requires nodejs). Your browser will open at http://localhost:3000
 ```
-cd ui
+cd cake-manager-ui
 npm start
 ```
 
@@ -54,7 +54,7 @@ Start the server with cors security enabled:
 
 Build the react application and bundle within the spring-boot application:
 ```
-cd ui
+cd cake-manager-ui
 npm run-script build
 ```
 Note: The above command builds then copies the React application to the `src/main/resources/static` directory. The built application files are also checked in so that the application can be started easily.
