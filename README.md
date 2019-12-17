@@ -38,12 +38,13 @@ A single cake has been baked into the system for you to enjoy!
 
 # User Interface
 
-The code for the user interface is located in the `ui` folder. 
+The code for the user interface is located in the `cake-manager-ui` folder. 
 This is developed using the [React Framework](https://reactjs.org/).
 
 Start the user interface for development (requires nodejs). Your browser will open at http://localhost:3000
 ```
 cd cake-manager-ui
+npm install
 npm start
 ```
 
@@ -57,7 +58,7 @@ Build the react application and bundle within the spring-boot application:
 cd cake-manager-ui
 npm run-script build
 ```
-Note: The above command builds then copies the React application to the `src/main/resources/static` directory. The built application files are also checked in so that the application can be started easily.
+Note: The above command builds then copies the React application to the `src/main/resources/static` directory. The built application files are also checked in there so that the application can be started easily.
 
 # Containerisation
 
