@@ -14,7 +14,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "buildXX": "react-scripts build",
     "build": "react-scripts build && rm -rf ../cake-manager/src/main/resources/static && mv build ../cake-manager/src/main/resources/static",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

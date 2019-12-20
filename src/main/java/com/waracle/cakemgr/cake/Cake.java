@@ -17,7 +17,7 @@ public class Cake {
 
     static final int MAX_NAME_LENGTH = 100, MAX_DESCRIPTION_LENGTH = 100, MAX_IMAGE_URL_LENGTH = 300;
 
-    protected Cake() {}
+    private Cake() {}
 
     public Cake(String name, String description, String imageURL) {
         isTrue(notEmpty(name).length()<=MAX_NAME_LENGTH);
